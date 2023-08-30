@@ -26,7 +26,7 @@ class Product extends Component
 
     public function render()
     {
-        return view('livewire.admin.product')->extends('layouts.app')
+        return view('livewire.admin.product')->extends('layouts.admin-app')
             ->section('content');
     }
 }
