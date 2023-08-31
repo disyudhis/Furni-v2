@@ -6,6 +6,7 @@ use App\Models\Category;
 use Jantinnerezo\LivewireAlert\LivewireAlert;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class Product extends Component
 {
@@ -16,6 +17,8 @@ class Product extends Component
     public $discount_price;
     public $category;
     public $select_product;
+    public $selectedCategory;
+    public $search;
 
     protected $rules = [
         'title' => 'required|min:1',
@@ -27,6 +30,7 @@ class Product extends Component
 
     public function openModal()
     {
+        $this->select_product = null;
         $this->dispatchBrowserEvent('openModal');
         $this->title = null;
         $this->price = null;
@@ -117,8 +121,15 @@ class Product extends Component
 
     public function render()
     {
+        $products = \App\Models\Product::query();
+        if ($this->selectedCategory) {
+            $products->where('category_id', $this->selectedCategory);
+        }
+        if ($this->search) {
+            $products = $products->whereRaw('LOWER(title) LIKE ?', ['%' . strtolower($this->search) . '%']);
+        }
+        $products = $products->get();
         $categories = Category::all();
-        $products = \App\Models\Product::all();
         return view('livewire.admin.product', compact('categories', 'products'))->extends('layouts.admin-app')
             ->section('content');
 

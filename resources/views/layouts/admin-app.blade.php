@@ -100,7 +100,6 @@
     </div>
     @livewireScripts
 
-    @include('sweetalert::alert')
     @stack('script')
 </body>
 
