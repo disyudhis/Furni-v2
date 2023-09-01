@@ -10,6 +10,8 @@
                 }, 2000); // Menghilangkan setelah 5 detik (5000 milidetik)
             </script>
         @endif
+
+        {{-- content --}}
         <h1>Your Shopping Cart</h1>
         <div class="row">
             <div class="col-md-8">
@@ -78,10 +80,101 @@
                         <p>Subtotal: <strong>Rp. {{ number_format($totalPrice, 2) }}</strong></p>
                         <hr>
                         <p>Total: <strong>Rp. {{ number_format($totalPrice, 2) }}</strong></p>
-                        <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
+                        {{-- <button wire:click="checkout({{ $totalPrice }},
+                            {{ $totalItems }})"
+                            class="btn btn-primary btn-block @if ($totalPrice != null) @else
+disabled @endif">Proceed
+                            to
+                            Checkout</button> --}}
+                        <button
+                            class="btn btn-primary btn-block @if ($totalPrice != null) @else disabled @endif"
+                            wire:click="openModal">Pay</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div wire:ignore.self class="modal fade" id="creditCardModal" tabindex="-1"
+            aria-labelledby="creditCardModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Isi modal dengan formulir pembayaran kartu kredit -->
+                        <!-- Misalnya, masukkan nomor kartu, tanggal kedaluwarsa, CVV, dan lainnya -->
+                        <h5 class="text-center"><strong>Payment Gateway</strong></h5>
+                        <form wire:submit.prevent="store">
+                            <div class="mb-3">
+                                <label for="name_on_card" class="form-label">Name On Card</label>
+                                <input type="text" wire:model="name" class="form-control" id="name_on_card"
+                                    placeholder="Test" size="4">
+                                @error('name')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="card_number" class="form-label">Card Number</label>
+                                <input type="text" wire:model="cardNumber" class="form-control card-number"
+                                    size="20" id="card_number" placeholder="1234 5678 9012 3456">
+                                @error('cardNumber')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="expiration_month" class="form-label">Exp Month</label>
+                                        <input type="text" wire:model="expMonth"
+                                            class="form-control card-expiry-month" size="2" id="expiration_month"
+                                            placeholder="MM">
+                                        @error('expMonth')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="expiration_year" class="form-label">Exp Year</label>
+                                        <input type="text" wire:model="expYear" class="form-control card-expiry-year"
+                                            size="4" id="expiration_year" placeholder="YYYY">
+                                        @error('expYear')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="mb-3">
+                                        <label for="cvc" class="form-label">CVC</label>
+                                        <input type="text" wire:model="cvc" class="form-control card-cvc"
+                                            id="cvc" placeholder="123">
+                                        @error('cvc')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary btn-block">Pay</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @push('script')
+            <script>
+                window.addEventListener('openModal', event => {
+                    $("#creditCardModal").modal('show');
+                })
+
+                window.addEventListener('closeModal', event => {
+                    $("#creditCardModal").modal('hide');
+                })
+            </script>
+        @endpush
     </div>
 </div>

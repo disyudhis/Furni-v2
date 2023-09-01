@@ -2,7 +2,6 @@
     <div class="jumbotron text-center">
         <h1>Welcome to Our Furniture Store</h1>
         <p>Discover the finest selection of furniture for your home.</p>
-        <a href="#" class="btn btn-primary btn-lg">Shop Now</a>
     </div>
     <div class="container featured-products">
         <div class="row">

@@ -10,6 +10,11 @@ class Cart extends Component
     public $cart;
     public $totalPrice = 0;
     public $itemPrice = 0;
+    public $name;
+    public $cardNumber;
+    public $expMonth;
+    public $expYear;
+    public $cvc;
 
     public function increment($id)
     {
@@ -40,6 +45,28 @@ class Cart extends Component
         $cart->delete();
         session()->flash('message', 'Product deleted successfully');
     }
+
+    public function checkout($totalPrice, $totalItems)
+    {
+
+        return redirect()->route('checkout', ['totalPrice' => $totalPrice, 'totalItems' => $totalItems]);
+    }
+
+    public function store()
+    {
+
+    }
+
+    public function openModal()
+    {
+        $this->dispatchBrowserEvent('openModal');
+    }
+
+    public function closeModal()
+    {
+        $this->dispatchBrowserEvent('closeModal');
+    }
+
     public function render()
     {
         $carts = \App\Models\Cart::where('user_id', auth()->id())
@@ -49,7 +76,7 @@ class Cart extends Component
 
         // Menghitung jumlah item
         $totalItems = $carts->sum('quantity');
-        
+
         return view('livewire.user.cart', compact('carts', 'totalItems'))->extends('layouts.user-app')->section('content');
     }
 }

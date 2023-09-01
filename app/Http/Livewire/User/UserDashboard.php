@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 
 class UserDashboard extends Component
 {
@@ -14,26 +15,31 @@ class UserDashboard extends Component
 
     public function add_cart($id)
     {
-        $existingCart = Cart::where('user_id', auth()->id())
-            ->where('product_id', $id)
-            ->first();
+        if (Auth::id()) {
 
-        if ($existingCart) {
-            $existingCart->update([
-                'quantity' => $existingCart->quantity + 1,
-            ]);
+            $existingCart = Cart::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->first();
+
+            if ($existingCart) {
+                $existingCart->update([
+                    'quantity' => $existingCart->quantity + 1,
+                ]);
+            } else {
+                $product = Product::find($id);
+                Cart::create([
+                    'user_id' => auth()->id(),
+                    'product_id' => $id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => 1
+                ]);
+            }
+
+            return redirect('/cart')->with('message', 'Product added to cart');
         } else {
-            $product = Product::find($id);
-            Cart::create([
-                'user_id' => auth()->id(),
-                'product_id' => $id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'quantity' => 1
-            ]);
+            return redirect('/login');
         }
-
-        return redirect('/cart')->with('message', 'Product added to cart');
     }
 
     public function render()

@@ -173,7 +173,7 @@
             })
         </script>
 
-        <script>
+        {{-- <script>
             function confirmation(ev) {
                 ev.preventDefault();
                 var urlToRedirect = ev.currentTarget.getAttribute('href');
@@ -191,9 +191,9 @@
                         }
                     })
             }
-        </script>
+        </script> --}}
 
-        <script>
+        {{-- <script>
             document.addEventListener('livewire:load', function() {
                 Livewire.on('deleteConfirmation', productId => {
                     Swal.fire({
@@ -210,6 +210,6 @@
                     });
                 });
             });
-        </script>
+        </script> --}}
     @endpush
 </div>
