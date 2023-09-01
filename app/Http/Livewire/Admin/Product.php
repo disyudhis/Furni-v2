@@ -22,8 +22,8 @@ class Product extends Component
 
     protected $rules = [
         'title' => 'required|min:1',
-        'price' => 'required|regex:/^(Rp\s)?\d{1,3}(.\d{3})*(,\d{0,2})?$/',
-        'discount_price' => 'nullable|regex:/^(Rp\s)?\d{1,3}(.\d{3})*(,\d{0,2})?$/|lt:price',
+        'price' => 'required',
+        'discount_price' => 'nullable|lt:price',
         'image' => 'required|image|mimes:jpeg,png|max:1024',
         'category' => 'required'
     ];
@@ -60,16 +60,15 @@ class Product extends Component
     public function store()
     {
         $this->validate();
-        $imagename = null;
-        if ($this->image) {
-            $imagename = time() . '.' . $this->image->getClientOriginalExtension();
-            $this->image->storeAs('public', $imagename);
-        }
+        $imagename = time() . '.' . $this->image->getClientOriginalExtension();
+        $this->image->storeAs('public', $imagename);
 
+        $formattedPrice = number_format($this->price, 2, ',', '.');
+        $formattedDiscount = number_format($this->discount_price, 2, ',', '.');
         \App\Models\Product::create([
             'title' => $this->title,
-            'price' => $this->price,
-            'discount_price' => $this->discount_price,
+            'price' => $formattedPrice,
+            'discount_price' => $formattedDiscount,
             'image' => $imagename,
             'category_id' => $this->category
         ]);
@@ -90,11 +89,12 @@ class Product extends Component
             $imagename = time() . '.' . $this->image->getClientOriginalExtension();
             $this->image->storeAs('public', $imagename);
         }
-
+        $formattedPrice = number_format($this->price, 2, ',', '.');
+        $formattedDiscount = number_format($this->discount_price, 2, ',', '.');
         $this->select_product->update([
             'title' => $this->title,
-            'price' => $this->price,
-            'discount_price' => $this->discount_price,
+            'price' => $formattedPrice,
+            'discount_price' => $formattedDiscount,
             'image' => $imagename,
             'category_id' => $this->category
         ]);
@@ -115,7 +115,9 @@ class Product extends Component
         $this->title = $product->title;
         $this->price = $product->price;
         $this->discount_price = $product->discount_price;
-        $this->image = $product->image;
+        if ($product->image != null) {
+            $this->image = $product->image;
+        }
         $this->category = $product->category_id;
     }
 

@@ -5,6 +5,7 @@ use App\Http\Livewire\Admin\AdminDashboard;
 use App\Http\Livewire\Admin\Dashboard;
 use App\Http\Livewire\Admin\Order;
 use App\Http\Livewire\Admin\Product;
+use App\Http\Livewire\User\Cart;
 use App\Http\Livewire\User\UserDashboard;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\Admin\Category;
@@ -36,6 +37,7 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Auth::routes();
 
 Route::get('/', UserDashboard::class)->name('userDashboard')->middleware('user');
+Route::get('/cart', Cart::class)->name('cart');
 // Route::group(['middleware' => 'user'], function () {
 // });
 

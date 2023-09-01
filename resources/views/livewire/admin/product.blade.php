@@ -55,8 +55,12 @@
                         <td>{{ $product->title }}</td>
                         <td><img src="{{ asset('storage/' . $product->image) }}" alt="" width="100"
                                 height="100"></td>
-                        <td>{{ $product->price }}</td>
-                        <td>{{ $product->discount_price }}</td>
+                        <td>Rp. {{ $product->price }}</td>
+                        @if ($product->discount_price != null)
+                            <td>Rp. {{ $product->discount_price }}</td>
+                        @else
+                            <td>-</td>
+                        @endif
                         <td><button wire:click="delete({{ $product->id }})" class="btn btn-danger">Hapus</button>
                             <button wire:click="edit({{ $product->id }})" class="btn btn-warning">Edit</button>
                         </td>
@@ -123,9 +127,6 @@
                         <label for="category" class="col-sm-2 col-form-label">Category</label>
                         <div class="col-sm-10">
                             <select class="form-select" id="category" wire:model="category">
-                                @error('category')
-                                    <p class="text-danger">{{ $message }}</p>
-                                @enderror
                                 <option value="" selected>
                                     Open this option
                                 </option>
@@ -134,6 +135,9 @@
                                     </option>
                                 @endforeach
                             </select>
+                            @error('category')
+                                <p class="text-danger">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
                     <div class="row mb-3">
